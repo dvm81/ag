@@ -141,7 +141,11 @@ Return ONLY the corrected Python code, nothing else.
                         HumanMessage(content="Fix the code")
                     ])
                     
-                    corrected_code = debug_response.content.strip()
+                    # Handle the response properly for newer Langchain versions
+                    if hasattr(debug_response, 'content'):
+                        corrected_code = debug_response.content.strip()
+                    else:
+                        corrected_code = str(debug_response).strip()
                     if corrected_code.startswith("```python"):
                         corrected_code = corrected_code[9:]
                     if corrected_code.endswith("```"):
@@ -246,7 +250,11 @@ Output only the Python code, nothing else."""
             HumanMessage(content="Generate the EDA.py script")
         ])
         
-        code = response.content.strip()
+        # Handle response for newer Langchain versions
+        if hasattr(response, 'content'):
+            code = response.content.strip()
+        else:
+            code = str(response).strip()
         if code.startswith("```python"):
             code = code[9:]
         if code.endswith("```"):
@@ -327,7 +335,11 @@ Output only the Python code, nothing else."""
             HumanMessage(content="Generate the FEATURE.py script")
         ])
         
-        code = response.content.strip()
+        # Handle response for newer Langchain versions
+        if hasattr(response, 'content'):
+            code = response.content.strip()
+        else:
+            code = str(response).strip()
         if code.startswith("```python"):
             code = code[9:]
         if code.endswith("```"):
@@ -416,7 +428,11 @@ Output only the Python code, nothing else."""
             HumanMessage(content="Generate the MODEL.py script")
         ])
         
-        code = response.content.strip()
+        # Handle response for newer Langchain versions
+        if hasattr(response, 'content'):
+            code = response.content.strip()
+        else:
+            code = str(response).strip()
         if code.startswith("```python"):
             code = code[9:]
         if code.endswith("```"):
@@ -505,7 +521,11 @@ Output only the Python code, nothing else."""
             HumanMessage(content="Generate the EVAL.py script")
         ])
         
-        code = response.content.strip()
+        # Handle response for newer Langchain versions
+        if hasattr(response, 'content'):
+            code = response.content.strip()
+        else:
+            code = str(response).strip()
         if code.startswith("```python"):
             code = code[9:]
         if code.endswith("```"):

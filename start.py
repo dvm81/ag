@@ -13,7 +13,7 @@ from typing import Dict, Any, List, TypedDict
 from datetime import datetime
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from dotenv import load_dotenv
 import warnings
 import logging
@@ -142,7 +142,10 @@ Return ONLY the corrected Python code, nothing else.
                     ])
                     
                     # Handle the response properly for newer Langchain versions
-                    if hasattr(debug_response, 'content'):
+                    # In Langchain 0.3.x, response is an AIMessage object
+                    if isinstance(debug_response, AIMessage):
+                        corrected_code = debug_response.content.strip()
+                    elif hasattr(debug_response, 'content'):
                         corrected_code = debug_response.content.strip()
                     else:
                         corrected_code = str(debug_response).strip()
@@ -251,7 +254,10 @@ Output only the Python code, nothing else."""
         ])
         
         # Handle response for newer Langchain versions
-        if hasattr(response, 'content'):
+        # In Langchain 0.3.x, response is an AIMessage object
+        if isinstance(response, AIMessage):
+            code = response.content.strip()
+        elif hasattr(response, 'content'):
             code = response.content.strip()
         else:
             code = str(response).strip()
@@ -336,7 +342,10 @@ Output only the Python code, nothing else."""
         ])
         
         # Handle response for newer Langchain versions
-        if hasattr(response, 'content'):
+        # In Langchain 0.3.x, response is an AIMessage object
+        if isinstance(response, AIMessage):
+            code = response.content.strip()
+        elif hasattr(response, 'content'):
             code = response.content.strip()
         else:
             code = str(response).strip()
@@ -429,7 +438,10 @@ Output only the Python code, nothing else."""
         ])
         
         # Handle response for newer Langchain versions
-        if hasattr(response, 'content'):
+        # In Langchain 0.3.x, response is an AIMessage object
+        if isinstance(response, AIMessage):
+            code = response.content.strip()
+        elif hasattr(response, 'content'):
             code = response.content.strip()
         else:
             code = str(response).strip()
@@ -522,7 +534,10 @@ Output only the Python code, nothing else."""
         ])
         
         # Handle response for newer Langchain versions
-        if hasattr(response, 'content'):
+        # In Langchain 0.3.x, response is an AIMessage object
+        if isinstance(response, AIMessage):
+            code = response.content.strip()
+        elif hasattr(response, 'content'):
             code = response.content.strip()
         else:
             code = str(response).strip()

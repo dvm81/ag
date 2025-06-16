@@ -55,9 +55,10 @@ def setup_logging():
 # Initialize logger
 logger = setup_logging()
 
-# Activate the conda environment
-os.environ['PATH'] = f"/Users/dimitermilushev/miniforge3/envs/msft_agents/bin:{os.environ['PATH']}"
-sys.path.insert(0, '/Users/dimitermilushev/miniforge3/envs/msft_agents/lib/python3.10/site-packages')
+# Note: Environment paths - update these if running in a different environment
+# Comment out these lines if not using the specific conda environment
+# os.environ['PATH'] = f"/Users/dimitermilushev/miniforge3/envs/msft_agents/bin:{os.environ['PATH']}"
+# sys.path.insert(0, '/Users/dimitermilushev/miniforge3/envs/msft_agents/lib/python3.10/site-packages')
 
 # Define the state for our workflow
 class GraphState(TypedDict):
@@ -79,6 +80,64 @@ def get_llm():
     logger.debug("Successfully initialized LLM with OpenAI API")
     return ChatOpenAI(model="gpt-4o", temperature=0, api_key=api_key)
 
+# Safe wrapper for LLM invocation
+def safe_llm_invoke(llm, messages):
+    """Safely invoke LLM with proper error handling for different Langchain versions"""
+    try:
+        logger.debug(f"Invoking LLM with {len(messages)} messages")
+        logger.debug(f"Message types: {[type(m).__name__ for m in messages]}")
+        
+        # Try direct invocation first
+        response = llm.invoke(messages)
+        
+        logger.debug(f"Response type: {type(response).__name__}")
+        logger.debug(f"Response attributes: {dir(response)}")
+        
+        # Extract content based on response type
+        if isinstance(response, AIMessage):
+            return response.content
+        elif hasattr(response, 'content'):
+            return response.content
+        elif isinstance(response, str):
+            return response
+        else:
+            # Try to convert to string as last resort
+            return str(response)
+            
+    except AttributeError as e:
+        logger.error(f"AttributeError during LLM invocation: {e}")
+        logger.error(f"Full error details: {str(e)}")
+        
+        # Try alternative invocation method for older Langchain versions
+        try:
+            # Convert messages to dicts if needed
+            message_dicts = []
+            for msg in messages:
+                if isinstance(msg, SystemMessage):
+                    message_dicts.append({"role": "system", "content": msg.content})
+                elif isinstance(msg, HumanMessage):
+                    message_dicts.append({"role": "user", "content": msg.content})
+                else:
+                    message_dicts.append({"role": "assistant", "content": str(msg)})
+            
+            # Try with message dicts
+            response = llm.invoke(message_dicts)
+            
+            if isinstance(response, AIMessage):
+                return response.content
+            elif hasattr(response, 'content'):
+                return response.content
+            else:
+                return str(response)
+                
+        except Exception as e2:
+            logger.error(f"Alternative invocation also failed: {e2}")
+            raise e  # Re-raise original error
+            
+    except Exception as e:
+        logger.error(f"Unexpected error during LLM invocation: {e}")
+        raise
+
 # Helper function to execute Python code with debugging
 def execute_and_debug_code(code: str, filename: str, llm, max_attempts: int = 3) -> tuple[str, str, str]:
     """Execute Python code and debug if errors occur. Returns (stdout, stderr, final_code)"""
@@ -97,7 +156,7 @@ def execute_and_debug_code(code: str, filename: str, llm, max_attempts: int = 3)
         try:
             logger.debug(f"Running subprocess for {filename}")
             result = subprocess.run(
-                ["/Users/dimitermilushev/miniforge3/envs/msft_agents/bin/python", filename],
+                [sys.executable, filename],
                 capture_output=True,
                 text=True,
                 timeout=300
@@ -136,19 +195,10 @@ Return ONLY the corrected Python code, nothing else.
 """
                 
                 try:
-                    debug_response = llm.invoke([
+                    corrected_code = safe_llm_invoke(llm, [
                         SystemMessage(content=debug_prompt),
                         HumanMessage(content="Fix the code")
-                    ])
-                    
-                    # Handle the response properly for newer Langchain versions
-                    # In Langchain 0.3.x, response is an AIMessage object
-                    if isinstance(debug_response, AIMessage):
-                        corrected_code = debug_response.content.strip()
-                    elif hasattr(debug_response, 'content'):
-                        corrected_code = debug_response.content.strip()
-                    else:
-                        corrected_code = str(debug_response).strip()
+                    ]).strip()
                     if corrected_code.startswith("```python"):
                         corrected_code = corrected_code[9:]
                     if corrected_code.endswith("```"):
@@ -248,19 +298,10 @@ Output only the Python code, nothing else."""
         llm = get_llm()
         
         logger.debug("Invoking LLM with EDA prompt")
-        response = llm.invoke([
+        code = safe_llm_invoke(llm, [
             SystemMessage(content=eda_prompt),
             HumanMessage(content="Generate the EDA.py script")
-        ])
-        
-        # Handle response for newer Langchain versions
-        # In Langchain 0.3.x, response is an AIMessage object
-        if isinstance(response, AIMessage):
-            code = response.content.strip()
-        elif hasattr(response, 'content'):
-            code = response.content.strip()
-        else:
-            code = str(response).strip()
+        ]).strip()
         if code.startswith("```python"):
             code = code[9:]
         if code.endswith("```"):
@@ -336,19 +377,10 @@ Output only the Python code, nothing else."""
         llm = get_llm()
         
         logger.debug("Invoking LLM with Feature Engineering prompt")
-        response = llm.invoke([
+        code = safe_llm_invoke(llm, [
             SystemMessage(content=feature_prompt),
             HumanMessage(content="Generate the FEATURE.py script")
-        ])
-        
-        # Handle response for newer Langchain versions
-        # In Langchain 0.3.x, response is an AIMessage object
-        if isinstance(response, AIMessage):
-            code = response.content.strip()
-        elif hasattr(response, 'content'):
-            code = response.content.strip()
-        else:
-            code = str(response).strip()
+        ]).strip()
         if code.startswith("```python"):
             code = code[9:]
         if code.endswith("```"):
@@ -432,19 +464,10 @@ Output only the Python code, nothing else."""
         llm = get_llm()
         
         logger.debug("Invoking LLM with Modeling prompt")
-        response = llm.invoke([
+        code = safe_llm_invoke(llm, [
             SystemMessage(content=model_prompt),
             HumanMessage(content="Generate the MODEL.py script")
-        ])
-        
-        # Handle response for newer Langchain versions
-        # In Langchain 0.3.x, response is an AIMessage object
-        if isinstance(response, AIMessage):
-            code = response.content.strip()
-        elif hasattr(response, 'content'):
-            code = response.content.strip()
-        else:
-            code = str(response).strip()
+        ]).strip()
         if code.startswith("```python"):
             code = code[9:]
         if code.endswith("```"):
@@ -528,19 +551,10 @@ Output only the Python code, nothing else."""
         llm = get_llm()
         
         logger.debug("Invoking LLM with Evaluation prompt")
-        response = llm.invoke([
+        code = safe_llm_invoke(llm, [
             SystemMessage(content=eval_prompt),
             HumanMessage(content="Generate the EVAL.py script")
-        ])
-        
-        # Handle response for newer Langchain versions
-        # In Langchain 0.3.x, response is an AIMessage object
-        if isinstance(response, AIMessage):
-            code = response.content.strip()
-        elif hasattr(response, 'content'):
-            code = response.content.strip()
-        else:
-            code = str(response).strip()
+        ]).strip()
         if code.startswith("```python"):
             code = code[9:]
         if code.endswith("```"):

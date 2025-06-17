@@ -101,7 +101,7 @@ def execute_and_debug_code(code: str, filename: str, llm, max_attempts: int = 3)
                 ["/Users/dimitermilushev/miniforge3/envs/msft_agents/bin/python", filename],
                 capture_output=True,
                 text=True,
-                timeout=300
+                timeout=600  # Increased from 300 to 600 seconds (10 minutes)
             )
             
             stdout, stderr = result.stdout, result.stderr
@@ -165,7 +165,7 @@ Return ONLY the corrected Python code, nothing else.
                 
         except subprocess.TimeoutExpired:
             logger.error(f"Timeout expired while executing {filename}")
-            return "", "Execution timeout after 300 seconds", current_code
+            return "", "Execution timeout after 600 seconds", current_code
         except Exception as e:
             logger.error(f"Error executing {filename}: {str(e)}")
             return "", str(e), current_code
@@ -190,7 +190,7 @@ def execute_python_code(code: str, filename: str) -> tuple[str, str]:
             ["/Users/dimitermilushev/miniforge3/envs/msft_agents/bin/python", filename],
             capture_output=True,
             text=True,
-            timeout=300
+            timeout=600  # Increased from 300 to 600 seconds
         )
         
         if result.stdout:
@@ -201,7 +201,7 @@ def execute_python_code(code: str, filename: str) -> tuple[str, str]:
         return result.stdout, result.stderr
     except subprocess.TimeoutExpired:
         logger.error(f"Timeout expired while executing {filename}")
-        return "", "Execution timeout after 300 seconds"
+        return "", "Execution timeout after 600 seconds"
     except Exception as e:
         logger.error(f"Error executing {filename}: {str(e)}")
         return "", str(e)
@@ -396,11 +396,14 @@ Your task is to write a complete Python script called MODEL.py that:
 2. Prepares the data for modeling (handle NaN values, scale features if needed)
 3. Trains multiple models to predict 'Target_return', including:
    - Linear Regression (baseline)
-   - Random Forest
-   - XGBoost
-   - LightGBM
-   - Any other suitable models
-4. Performs hyperparameter tuning using the validation set
+   - Random Forest (with minimal hyperparameter tuning)
+   - XGBoost (optional, if time permits)
+   - LightGBM (optional, with verbosity=0 to reduce warnings)
+4. Performs MINIMAL hyperparameter tuning to avoid timeouts:
+   - Use only 2 parameter combinations per model
+   - Use cv=2 instead of cv=3
+   - Set n_jobs=1 to avoid parallel processing overhead
+   - For LightGBM, set verbosity=0 or verbose=-1
 5. Evaluates each model on the validation set using appropriate metrics (RMSE, MAE, R2)
 6. Selects the best model based on validation performance
 7. Saves the best model as 'best_model.pkl' using joblib
@@ -409,6 +412,14 @@ Your task is to write a complete Python script called MODEL.py that:
 10. Prints model performance comparisons and feature importances
 
 Important: Do NOT use the test set for training or model selection. Only train/val sets.
+
+CRITICAL for avoiding timeouts:
+- Keep hyperparameter grids VERY SMALL (max 2-3 combinations)
+- Use RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42, n_jobs=1)
+- Use XGBRegressor(n_estimators=100, max_depth=6, random_state=42, n_jobs=1)
+- Use LGBMRegressor(n_estimators=100, num_leaves=31, random_state=42, n_jobs=1, verbosity=-1)
+- Skip GridSearchCV if training takes too long - just use default parameters
+- Set warnings.filterwarnings('ignore') to reduce output
 
 Write a complete, executable Python script. Include all necessary imports. Handle any potential errors gracefully.
 

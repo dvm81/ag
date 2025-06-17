@@ -303,13 +303,16 @@ def feature_engineering_agent(state: GraphState) -> GraphState:
 
 Your task is to write a complete Python script called FEATURE.py that:
 1. Loads the MSFT data from all three files: 'data/MSFT_train.csv', 'data/MSFT_val.csv', 'data/MSFT_test.csv'
-2. Creates meaningful features for predicting next-day log returns, including:
-   - Technical indicators (moving averages, RSI, MACD, Bollinger Bands, etc.)
-   - Price-based features (returns, log returns, price ratios)
-   - Volume-based features (volume moving averages, volume ratios)
-   - Volatility features (rolling standard deviation, ATR)
-   - Momentum features
-   - Any other relevant financial features
+2. Creates ADVANCED features for predicting next-day log returns, including:
+   - Technical indicators: Multiple timeframes (5,10,20,50 days) for SMA, EMA, RSI, MACD, Bollinger Bands
+   - Price-based features: Multiple period returns (1,2,3,5,10 days), log returns, price ratios, OHLC ratios
+   - Volume features: Volume SMA, volume ratios, price-volume correlation, OBV (On-Balance Volume)
+   - Volatility features: GARCH-style features, rolling std (5,10,20 days), ATR, realized volatility
+   - Momentum features: ROC (Rate of Change), momentum oscillators, Stochastic %K/%D
+   - Market microstructure: High-low spread, close-to-close volatility, Parkinson volatility
+   - Lag features: Lagged returns (1-5 days), lagged volume, autocorrelations
+   - Rolling statistics: Rolling mean, std, skew, kurtosis for returns
+   - Interaction features: Price*Volume, volatility*momentum combinations
 3. Handles the temporal nature of the data properly (no look-ahead bias)
 4. Saves the engineered features for each dataset as:
    - 'data/MSFT_train_features.csv'
@@ -394,16 +397,16 @@ Your task is to write a complete Python script called MODEL.py that:
    - 'data/MSFT_train_features.csv'
    - 'data/MSFT_val_features.csv'
 2. Prepares the data for modeling (handle NaN values, scale features if needed)
-3. Trains multiple models to predict 'Target_return', including:
-   - Linear Regression (baseline)
-   - Random Forest (with minimal hyperparameter tuning)
-   - XGBoost (optional, if time permits)
-   - LightGBM (optional, with verbosity=0 to reduce warnings)
-4. Performs MINIMAL hyperparameter tuning to avoid timeouts:
-   - Use only 2 parameter combinations per model
-   - Use cv=2 instead of cv=3
-   - Set n_jobs=1 to avoid parallel processing overhead
-   - For LightGBM, set verbosity=0 or verbose=-1
+3. Trains ADVANCED models to predict 'Target_return', including:
+   - Linear models: Ridge, Lasso, ElasticNet with different alpha values
+   - Tree-based: RandomForest, ExtraTrees, XGBoost, LightGBM, CatBoost
+   - Neural networks: Simple MLPRegressor with early stopping
+   - Ensemble: VotingRegressor combining best models
+4. Performs SMART hyperparameter tuning while avoiding timeouts:
+   - Use RandomizedSearchCV with n_iter=5 for efficiency
+   - Focus on most important hyperparameters for each model
+   - Use early stopping for boosting algorithms
+   - Set verbosity=0 for all models to reduce output
 5. Evaluates each model on the validation set using appropriate metrics (RMSE, MAE, R2)
 6. Selects the best model based on validation performance
 7. Saves the best model as 'best_model.pkl' using joblib
@@ -413,13 +416,16 @@ Your task is to write a complete Python script called MODEL.py that:
 
 Important: Do NOT use the test set for training or model selection. Only train/val sets.
 
-CRITICAL for avoiding timeouts:
-- Keep hyperparameter grids VERY SMALL (max 2-3 combinations)
-- Use RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42, n_jobs=1)
-- Use XGBRegressor(n_estimators=100, max_depth=6, random_state=42, n_jobs=1)
-- Use LGBMRegressor(n_estimators=100, num_leaves=31, random_state=42, n_jobs=1, verbosity=-1)
-- Skip GridSearchCV if training takes too long - just use default parameters
-- Set warnings.filterwarnings('ignore') to reduce output
+CRITICAL for performance while avoiding timeouts:
+- Feature selection: Use SelectKBest or feature importance to reduce dimensionality
+- Data preprocessing: Handle outliers, apply target encoding for categorical features
+- Advanced models to try: Ridge, Lasso, ElasticNet, XGBoost, LightGBM, CatBoost, MLPRegressor
+- Use RandomizedSearchCV with n_iter=5 instead of GridSearchCV for efficiency
+- Enable early stopping for gradient boosting models (early_stopping_rounds=10)
+- Cross-validation: Use TimeSeriesSplit for time series data instead of regular CV
+- Ensemble methods: VotingRegressor or simple averaging of best models
+- Set all models to n_jobs=1 and verbosity=0 to reduce overhead
+- Use feature scaling (StandardScaler or RobustScaler) for better model performance
 
 Write a complete, executable Python script. Include all necessary imports. Handle any potential errors gracefully.
 

@@ -4,7 +4,6 @@ Multi-Agent System for MSFT Stock Prediction using LangGraph
 """
 
 import os
-import json
 import subprocess
 import sys
 from typing import Dict, Any, TypedDict
@@ -253,9 +252,14 @@ def main():
     add_file_content(script_logs, "MODEL.py", "Modeling_Script")
     add_file_content(script_logs, "EVAL.py", "Evaluation_Script")
     
-    # Save submission log
+    # Save submission log in the required format
+    import json
     with open("submission_log.json", "w") as f:
         json.dump(submission_log, f, indent=2)
+    
+    # Also save in enhanced format for better readability
+    from save_submission_log import save_enhanced_submission_log
+    save_enhanced_submission_log(submission_log)
     
     print("Multi-Agent System execution completed!")
     print("Generated files:")

@@ -69,3 +69,17 @@ def extract_text_from_pdf_fast(
             blocks.append(b)
 
     return ExtractionResult(text="\n\n".join(texts), blocks=blocks)
+
+
+# 1) Build OCR engine ONCE at process start (don’t re-create per request)
+# from ingest_text_oss import make_ocr_engine
+# ocr_engine = make_ocr_engine("paddle", lang="en")  # or "tesseract"
+
+# 2) Use the fast extractor
+res = extract_text_from_pdf_fast(open("doc.pdf","rb"), ocr=ocr_engine)
+
+#OTHER WINS
+
+
+is_pdf = b.startswith(b"%PDF-")
+is_data_image = s.startswith("data:image/") if isinstance(s := input_str, str) else False

@@ -1,0 +1,57 @@
+{
+  "type": "function",
+  "function": {
+    "name": "emit_entities",
+    "description": "Return extracted organization entities from the text. Do NOT include UBS or Credit Suisse (e.g., 'UBS', 'UBS Switzerland AG', 'Credit Suisse', 'Credit Suisse (Brasil)...').",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Word": {
+                "type": "string",
+                "description": "Company name as found in the text.",
+                "not": {
+                  "pattern": "\\b([Uu][Bb][Ss]|[Cc]redit\\s+[Ss]uisse)\\b"
+                }
+              },
+              "RIC_value": { "type": "string" },
+              "RIC_confidence": { "type": "string", "enum": ["none","low","medium","high","very high"] },
+              "RIC_reason": { "type": "string" },
+              "BBticker_value": { "type": "string" },
+              "BBticker_confidence": { "type": "string", "enum": ["none","low","medium","high","very high"] },
+              "BBticker_reason": { "type": "string" },
+              "Symbol_value": { "type": "string" },
+              "Symbol_confidence": { "type": "string", "enum": ["none","low","medium","high","very high"] },
+              "Symbol_reason": { "type": "string" },
+              "ISIN_value": { "type": "string" },
+              "ISIN_confidence": { "type": "string", "enum": ["none","low","medium","high","very high"] },
+              "ISIN_reason": { "type": "string" },
+              "SEDOL_value": { "type": "string" },
+              "SEDOL_confidence": { "type": "string", "enum": ["none","low","medium","high","very high"] },
+              "SEDOL_reason": { "type": "string" },
+              "IssueName_value": { "type": "string" },
+              "IssueName_confidence": { "type": "string", "enum": ["none","low","medium","high","very high"] },
+              "IssueName_reason": { "type": "string" }
+            },
+            "required": [
+              "Word",
+              "RIC_value","RIC_confidence","RIC_reason",
+              "BBticker_value","BBticker_confidence","BBticker_reason",
+              "Symbol_value","Symbol_confidence","Symbol_reason",
+              "ISIN_value","ISIN_confidence","ISIN_reason",
+              "SEDOL_value","SEDOL_confidence","SEDOL_reason",
+              "IssueName_value","IssueName_confidence","IssueName_reason"
+            ]
+          }
+        }
+      },
+      "required": ["entities"],
+      "additionalProperties": false
+    }
+  }
+}

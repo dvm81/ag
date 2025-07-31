@@ -1,0 +1,125 @@
+{
+  "name": "extract_companies",
+  "description": "Extract company mentions from text with their identifiers, confidence levels, and reasons for the confidence level",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "companies": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "Word": {
+              "type": "string",
+              "description": "The exact text found in the article"
+            },
+            "RIC_value": {
+              "type": "string"
+            },
+            "RIC_confidence": {
+              "type": "string",
+              "enum": [
+                "none",
+                "low",
+                "medium",
+                "high",
+                "very_high"
+              ]
+            },
+            "RIC_reason": {
+              "type": "string",
+              "description": "The reason or explanation for the confidence level of RIC"
+            },
+            "BBTicker_value": {
+              "type": "string"
+            },
+            "BBTicker_confidence": {
+              "type": "string",
+              "enum": [
+                "none",
+                "low",
+                "medium",
+                "high",
+                "very_high"
+              ]
+            },
+            "BBTicker_reason": {
+              "type": "string",
+              "description": "The reason or explanation for the confidence level of BBTicker"
+            },
+            "Symbol_value": {
+              "type": "string"
+            },
+            "Symbol_confidence": {
+              "type": "string",
+              "enum": [
+                "none",
+                "low",
+                "medium",
+                "high",
+                "very_high"
+              ]
+            },
+            "Symbol_reason": {
+              "type": "string",
+              "description": "The reason or explanation for the confidence level of Symbol"
+            },
+            "ISIN_value": {
+              "type": "string"
+            },
+            "ISIN_confidence": {
+              "type": "string",
+              "enum": [
+                "none",
+                "low",
+                "medium",
+                "high",
+                "very_high"
+              ]
+            },
+            "ISIN_reason": {
+              "type": "string",
+              "description": "The reason or explanation for the confidence level of ISIN"
+            },
+            "SEDOL_value": {
+              "type": "string"
+            },
+            "SEDOL_confidence": {
+              "type": "string",
+              "enum": [
+                "none",
+                "low",
+                "medium",
+                "high",
+                "very_high"
+              ]
+            },
+            "SEDOL_reason": {
+              "type": "string",
+              "description": "The reason or explanation for the confidence level of SEDOL"
+            },
+            "IssueName_value": {
+              "type": "string"
+            },
+            "IssueName_confidence": {
+              "type": "string",
+              "enum": [
+                "none",
+                "low",
+                "medium",
+                "high",
+                "very_high"
+              ]
+            },
+            "IssueName_reason": {
+              "type": "string",
+              "description": "The reason or explanation for the confidence level of IssueName"
+            }
+          },
+          "required": ["Word", "RIC_value", "RIC_confidence", "RIC_reason", "BBTicker_value", "BBTicker_confidence", "BBTicker_reason", "Symbol_value", "Symbol_confidence", "Symbol_reason", "ISIN_value", "ISIN_confidence", "ISIN_reason", "SEDOL_value", "SEDOL_confidence", "SEDOL_reason", "IssueName_value", "IssueName_confidence", "IssueName_reason"]
+        }
+      }
+    },
+    "required": ["companies"]
+  }
+}

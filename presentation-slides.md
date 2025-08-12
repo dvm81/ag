@@ -81,9 +81,10 @@ graph TB
         CMD[/mrmc command]
     end
     
-    subgraph "Brain"
+    subgraph "AI Reasoning Layer"
         ORC[Orchestrator]
         AG[5 Specialized Agents]
+        LLM[LLM Service]
     end
     
     subgraph "Tools"
@@ -97,9 +98,14 @@ graph TB
     CMD --> ORC
     ORC --> AG
     AG --> TOOLS
-    AG --> DOC
+    TOOLS --> AG
+    AG --> LLM
+    LLM --> AG
+    AG --> ORC
+    ORC --> DOC
     
     style ORC fill:#f9f
+    style LLM fill:#ff9
     style DOC fill:#9f9
 ```
 

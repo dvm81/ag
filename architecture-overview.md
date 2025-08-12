@@ -1,5 +1,9 @@
 # MRMC Agent Bot: Architecture & Design Documentation
 
+> **📢 Important Update**: We've significantly enhanced the architecture with LLM-based reasoning. 
+> See [architecture-update-llm.md](./architecture-update-llm.md) for details on the transformation 
+> from pattern matching to intelligent AI reasoning.
+
 ## Executive Summary for Non-Technical Audience
 
 ### The Problem We're Solving

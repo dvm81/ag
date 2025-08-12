@@ -78,7 +78,7 @@ Each section has specific regulatory requirements that must be met.
 ```mermaid
 graph TB
     subgraph "Input"
-        CMD[/mrmc command]
+        CMD["mrmc command"]
     end
     
     subgraph "AI Reasoning Layer"

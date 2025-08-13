@@ -33,6 +33,49 @@ It's like having a skilled technical writer who:
 
 ---
 
+## Integration with Model Governance Workflow
+
+The MRMC Agent Bot is not a standalone solution but a critical component within a comprehensive model governance framework. For detailed workflow documentation, see [model-governance-workflow.md](./model-governance-workflow.md).
+
+### Governance Context
+
+```mermaid
+graph LR
+    subgraph "Pre-Processing"
+        INV[Model Inventory]
+        RISK[Risk Assessment]
+    end
+    
+    subgraph "MRMC Bot"
+        BOT[Documentation Generation]
+    end
+    
+    subgraph "Post-Processing"
+        REVIEW[Human Review]
+        IMMAT[Immateriality]
+        KPI[KPIs]
+    end
+    
+    INV --> RISK
+    RISK --> BOT
+    BOT --> REVIEW
+    REVIEW --> IMMAT
+    IMMAT --> KPI
+    
+    style BOT fill:#f9f,stroke:#333,stroke-width:4px
+```
+
+The MRMC Bot receives enriched inputs from:
+- **Model Inventory**: Business context, ownership, governance tier
+- **Risk Assessment**: Inherent risk rating, compliance requirements
+
+And provides outputs for:
+- **Human Review**: Draft documentation for validation
+- **Immateriality Assessment**: Model complexity insights
+- **KPI Generation**: Suggested performance metrics
+
+---
+
 ## Architecture Evolution: From Pattern Matching to AI Reasoning
 
 ### 🚀 The Great Architecture Transformation

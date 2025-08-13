@@ -318,7 +318,113 @@ graph LR
 
 ---
 
-# Slide 14: Security & Compliance
+# Slide 14: Complete Model Governance Integration
+
+## **MRMC Bot Within End-to-End Workflow**
+
+### The Bigger Picture
+
+```mermaid
+graph TB
+    subgraph "Manual Pre-Work"
+        REG[1. Register in Inventory]
+        RISK[2. Risk Assessment]
+    end
+    
+    subgraph "Automated Documentation"
+        BOT[3. MRMC Bot Generation]
+        REV{Human Review}
+    end
+    
+    subgraph "Post-Processing"
+        IMMAT[4. Immateriality Check]
+        KPI[5. KPI Definition]
+    end
+    
+    REG --> RISK
+    RISK --> BOT
+    BOT --> REV
+    REV -->|Approved| IMMAT
+    REV -->|Rejected| BOT
+    IMMAT --> KPI
+    
+    style BOT fill:#f9f
+    style REV fill:#ff9
+```
+
+### Integration Benefits
+- **Context-Aware**: Uses inventory and risk data
+- **Human Oversight**: Review before finalization
+- **Complete Coverage**: From registration to monitoring
+
+---
+
+# Slide 15: Governance Workflow Details
+
+## **Five-Step Model Governance Process**
+
+### Step-by-Step Flow
+
+| Step | Type | Duration | Output |
+|------|------|----------|--------|
+| **1. Model Registration** | Manual | 30 min | Model ID, Business Context |
+| **2. Risk Assessment** | Manual | 2 hours | Risk Rating, Compliance Needs |
+| **3. Documentation** | **Automated** | **30 sec** | MRMC Document Draft |
+| **4. Immateriality** | Semi-Auto | 1 hour | Materiality Score |
+| **5. KPI Setup** | Semi-Auto | 1 hour | Performance Metrics |
+
+### Time Savings
+- **Traditional**: 3 weeks total
+- **With MRMC Bot**: 5 hours total
+- **Reduction**: 99% time saved
+
+### Risk-Based Documentation
+```python
+if risk_level == "HIGH":
+    documentation_depth = "Comprehensive"
+    review_levels = 3
+    kpi_frequency = "Daily"
+else:
+    documentation_depth = "Standard"
+    review_levels = 1
+    kpi_frequency = "Monthly"
+```
+
+---
+
+# Slide 16: Human-in-the-Loop Review
+
+## **Smart Review Dashboard**
+
+### Review Interface Features
+
+```mermaid
+stateDiagram-v2
+    [*] --> Generated
+    Generated --> Review
+    Review --> Approved: Accept
+    Review --> Edit: Needs Changes
+    Edit --> Review: Resubmit
+    Approved --> Final
+    Final --> [*]
+```
+
+### What Reviewers Can Do
+- ✏️ **Edit** any section directly
+- 💬 **Comment** for clarification
+- 🔄 **Regenerate** with guidance
+- ✅ **Approve** with confidence scores
+- 📊 **Track** all changes
+
+### Approval Criteria
+- Technical accuracy verified
+- Business context validated
+- Regulatory requirements met
+- Risk factors addressed
+
+---
+
+# Slide 17: Security & Compliance
 
 ## **Enterprise-Ready Architecture**
 
@@ -336,7 +442,7 @@ graph LR
 
 ---
 
-# Slide 15: Success Metrics
+# Slide 18: Success Metrics
 
 ## **Measuring Impact**
 
@@ -356,7 +462,7 @@ graph LR
 
 ---
 
-# Slide 16: Technical Innovation
+# Slide 19: Technical Innovation
 
 ## **Cutting-Edge Capabilities**
 
@@ -387,7 +493,7 @@ agent.understands(
 
 ---
 
-# Slide 17: Demo Script
+# Slide 20: Demo Script
 
 ## **Live Demonstration Flow**
 
@@ -411,7 +517,7 @@ agent.understands(
 
 ---
 
-# Slide 18: Customer Testimonials
+# Slide 21: Customer Testimonials
 
 ## **Early Adopter Feedback**
 
@@ -429,7 +535,7 @@ agent.understands(
 
 ---
 
-# Slide 19: Pricing Model
+# Slide 22: Pricing Model
 
 ## **Investment & Returns**
 
@@ -449,7 +555,7 @@ agent.understands(
 
 ---
 
-# Slide 20: Next Steps
+# Slide 23: Next Steps
 
 ## **Ready to Transform Your Compliance Process?**
 
@@ -475,7 +581,7 @@ mrmc generate --mock
 
 ---
 
-# Slide 21: Q&A
+# Slide 24: Q&A
 
 ## **Questions & Discussion**
 
@@ -498,7 +604,7 @@ mrmc generate --mock
 
 ---
 
-# Slide 22: Appendix - Technical Details
+# Slide 25: Appendix - Technical Details
 
 ## **For Technical Audiences**
 
@@ -523,7 +629,7 @@ mrmc generate --mock
 
 ---
 
-# Slide 23: Thank You
+# Slide 26: Thank You
 
 ## **Transform Your Model Documentation Today**
 

@@ -1,0 +1,44 @@
+graph TB
+    subgraph Stage1["🔴 Stage 1: Baseline LLM"]
+        A1[Raw Text Input] --> B1[LLM Direct Processing]
+        B1 --> C1[Output: Tickers]
+        
+        D1[/"⚠️ Issues:<br/>• Hallucinations<br/>• No recent data<br/>• Context limitations"/]
+        
+        E1["📊 Metrics:<br/>Precision: 0.60<br/>Recall: 0.60<br/>F1: 0.60<br/>⚡ Speed: ~1 sec"]
+    end
+    
+    subgraph Stage2["🟡 Stage 2: Grounded + Verification"]
+        A2[Raw Text Input] --> B2[LLM Processing]
+        B2 --> C2[Knowledge Base<br/>Grounding]
+        C2 --> D2[Verification Layer]
+        D2 --> E2[Validated Tickers]
+        
+        F2["✅ Improvements:<br/>• Real data grounding<br/>• Double verification<br/>• High accuracy"]
+        
+        G2["📊 Metrics:<br/>Precision: 0.95<br/>Recall: 0.95<br/>F1: 0.95<br/>🐢 Speed: ~60 sec"]
+    end
+    
+    subgraph Stage3["🟢 Stage 3: Optimized Pipeline"]
+        A3[Raw Text Input] --> B3[Text Chunking]
+        B3 --> C3[Parallel Processing]
+        C3 --> D3[Knowledge Base<br/>Grounding]
+        D3 --> E3[Parallel Verification]
+        E3 --> F3[Consolidated Output]
+        
+        G3["🚀 Optimizations:<br/>• Smart chunking<br/>• Parallel execution<br/>• Batch processing"]
+        
+        H3["📊 Metrics:<br/>Precision: 0.95<br/>Recall: 0.95<br/>F1: 0.95<br/>⚡ Speed: ~5 sec"]
+    end
+    
+    Stage1 -.->|"Problem:<br/>Low Accuracy"| Stage2
+    Stage2 -.->|"Problem:<br/>Too Slow"| Stage3
+    
+    Result["🎯 Final Result:<br/>12x faster processing<br/>58% accuracy improvement<br/>Production-ready solution"]
+    
+    Stage3 ==> Result
+    
+    style Stage1 fill:#ffe6e6,stroke:#ff6666,stroke-width:2px
+    style Stage2 fill:#fff9e6,stroke:#ffcc66,stroke-width:2px
+    style Stage3 fill:#e6ffe6,stroke:#66cc66,stroke-width:2px
+    style Result fill:#e6f3ff,stroke:#3366cc,stroke-width:3px,color:#000
